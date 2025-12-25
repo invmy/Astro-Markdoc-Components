@@ -16,27 +16,27 @@ export default defineConfig({
   base: "/",
 
   integrations: [
-    react(),
+    // react(),
     markdoc({ allowHTML: true, ignoreIndentation: true }),
-    keystatic(),
+    // keystatic(),
   ],
 
   vite: {
     plugins: [tailwindcss()],
     //for keystatic
-    optimizeDeps: {
-      include: ["lodash-es", "lodash"],
-    },
-    ssr: {
-      noExternal: ["@keystatic/core", "@keystatic/astro"],
-    },
+    // optimizeDeps: {
+    //   include: ["lodash-es", "lodash"],
+    // },
+    // ssr: {
+    //   noExternal: ["@keystatic/core", "@keystatic/astro"],
+    // },
   },
 
   image: {
     service: passthroughImageService(), // Deployment to Cloudflare requires enabling
   },
 
-  adapter: node({
-    mode: "standalone",
-  }),
+  // adapter: node({
+  //   mode: "standalone",
+  // }),
 });
