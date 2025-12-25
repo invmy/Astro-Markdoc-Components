@@ -1,0 +1,29 @@
+---
+import AstroImage from "./AstroImage.astro";
+interface Props {
+  images: {
+    src: string;
+    alt?: string;
+  }[];
+}
+
+const { images } = Astro.props;
+---
+
+<div class="w-screen max-w-none relative left-1/2 -translate-x-1/2 px-1">
+  <div
+    class="horizontal-gallery-container flex gap-12 pb-5 overscroll-x-contain overflow-x-auto max-w-5xl mx-auto"
+  >
+    {
+      images.map((image) => (
+        <div class={`shrink-0 h-[480px] flex items-center justify-center`}>
+          <AstroImage
+            src={image.src}
+            alt={image.alt || "image"}
+            className="max-w-none h-full w-auto object-contain select-none"
+          />
+        </div>
+      ))
+    }
+  </div>
+</div>

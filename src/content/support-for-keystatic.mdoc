@@ -1,0 +1,177 @@
+---
+date: 2025-12-27
+title: Support for keystatic
+description: >-
+  Highly recommend using keystatic as your article editor. Once configured, it
+  enables zero-code publishing of articles!
+image: '@/assets/images/support-for-keystatic/image.JPG'
+---
+[keystatic](https://keystatic.com/docs/installation-astro)
+
+Deploy according to the documentation
+
+You'll get this.
+
+![](@/assets/images/support-for-keystatic/image.png)
+
+{% horizontalGallery
+   images=[{src: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hyaXN0bWFzfGVufDB8fDB8fHwy", alt: "assorted-type of leaves lying on white panel"}, {src: "https://images.unsplash.com/photo-1545048702-79362596cdc9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2hyaXN0bWFzfGVufDB8fDB8fHwy", alt: "assorted Christmas ornaments"}, {src: "https://images.unsplash.com/photo-1482517967863-00e15c9b44be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: "closeup photo of baubles on christmas tree"}, {src: "https://images.unsplash.com/photo-1514377006585-6e7975371bd6?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: " Christmas tree with string lights"}, {src: "https://images.unsplash.com/photo-1612979168796-bcae1575b8c5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: "green christmas tree with string lights"}] /%}
+
+## keystatic.config.ts
+
+This project uses the keystatic config and has added components.
+
+```ts
+import { config, fields, collection } from "@keystatic/core";
+import { networkImage } from "./keystatic_components/networkImage";
+import { horizontalGallery } from "./keystatic_components/horizontalGallery";
+
+export default config({
+  storage: {
+    kind: "local",
+    // kind: 'github',
+    // repo: {
+    //    owner: REPO_OWNER,
+    //    name: REPO_NAME
+    // }
+  },
+  ui: {
+    brand: { name: "Markdoc Components" },
+  },
+  collections: {
+    Posts: collection({
+      label: "Posts",
+      slugField: "title",
+      path: "src/content/*",
+      entryLayout: "content",
+      format: { contentField: "content" },
+      columns: ["title", "date", "description"],
+      schema: {
+        date: fields.date({ label: "Event date" }),
+        title: fields.slug({
+          name: { label: "Title" },
+          slug: {
+            label: "slug",
+            description: "For Local Src Path 'Aa-Zz,0-9,-,_,.,'are prohibited",
+          },
+        }),
+        description: fields.text({
+          label: "description",
+          multiline: true,
+        }),
+        // tags: fields.array(fields.text({ label: "Tag" }), {
+        //   label: "Tag",
+        //   itemLabel: (props) => props.value,
+        // }),
+        //Local image
+
+        image: fields.image({
+          label: "Image",
+          directory: "src/assets/images",
+          publicPath: "@/assets/images/",
+        }),
+
+        //image Url
+
+        // image: fields.url({
+        //   label: 'URL',
+        //   description: 'The website URL'
+        // }),
+        content: fields.markdoc({
+          label: "Content",
+          options: {
+            image: {
+              directory: "src/assets/images",
+              publicPath: "@/assets/images/",
+            },
+          },
+          components: {
+            networkImage,
+            horizontalGallery,
+          },
+        }),
+      },
+    }),
+  },
+});
+
+```
+
+### networkImage
+
+```ts
+//keystatic_components\networkImage.ts
+import { fields } from "@keystatic/core";
+import { block } from "@keystatic/core/content-components";
+import { createElement } from "react";
+
+export const networkImage = block({
+  label: "Image For URL",
+  ContentView: ({ value }) =>
+    createElement("div", { style: { textAlign: "center" } }, [
+      createElement("img", {
+        key: "img",
+        src: value.src || "",
+        style: { width: "50%", display: "inline-block" },
+      }),
+    ]),
+  schema: {
+    src: fields.url({
+      label: "Image URL",
+      validation: { isRequired: true },
+    }),
+    alt: fields.text({ label: "Image Alt" }),
+  },
+});
+
+```
+
+### horizontalGallery
+
+```ts
+//keystatic_components\horizontalGallery.ts
+
+import { fields } from "@keystatic/core";
+import { block } from "@keystatic/core/content-components";
+import { createElement } from "react";
+
+export const horizontalGallery = block({
+  label: "Horizontal Gallery",
+  ContentView: ({ value }) =>
+    createElement(
+      "div",
+      {
+        style: {
+          display: "flex",
+          overflowX: "auto",
+          gap: "10px",
+          paddingBottom: "10px",
+        },
+      },
+      value.images.map((image, index) =>
+        createElement("img", {
+          key: index,
+          src: image.src || "",
+          alt: image.alt,
+          style: { height: "150px", borderRadius: "8px" },
+        })
+      )
+    ),
+  schema: {
+    images: fields.array(
+      fields.object({
+        src: fields.url({
+          label: "Image URL",
+          validation: { isRequired: true },
+        }),
+        alt: fields.text({ label: "Image Alt" }),
+      }),
+      {
+        label: "Images",
+        itemLabel: (props) => props.fields.alt.value || "Image",
+      }
+    ),
+  },
+});
+
+```

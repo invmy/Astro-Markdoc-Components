@@ -1,0 +1,83 @@
+---
+date: 2025-12-25
+title: Horizontal gallery displaying multiple images
+description: >-
+  Using a horizontal gallery allows you to display more images more conveniently
+  without worrying about them taking up too much space. in the markdoc
+image: '@/assets/images/horizontal-gallery-displaying-multiple-images/image.png'
+---
+When displaying numerous images, they can consume a significant amount of space. To address this challenge, a horizontal gallery can be utilized.
+
+You can insert shortcodes to generate
+
+```go
+{% horizontalGallery 
+  images=[
+    {src: "image1 Path", alt: "image1 alt"},
+    {src: "image2 Path", alt: "image2 alt"}
+  ] /%}
+```
+
+## How does it work?
+
+The parent container must have the `overflow-visible` class.
+
+Add Tags Processor `HorizontalGallery.astro`
+
+```ts
+//markdoc.config.mjs
+import { defineMarkdocConfig, nodes, component } from "@astrojs/markdoc/config";
+
+
+export default defineMarkdocConfig({
+  tags: {
+    horizontalGallery: {
+      render: component("./src/components/markdoc/HorizontalGallery.astro"),
+      attributes: {
+        images: { type: Array, required: true },
+      },
+    },
+  },
+...
+```
+Add Astro components `src\components\markdoc\HorizontalGallery.astro`
+
+```astro
+//src\components\markdoc\HorizontalGallery.astro
+---
+import AstroImage from "./AstroImage.astro";
+interface Props {
+  images: {
+    src: string;
+    alt?: string;
+  }[];
+}
+
+const { images } = Astro.props;
+---
+
+<div class="w-screen max-w-none relative left-1/2 -translate-x-1/2 px-1">
+  <div
+    class="horizontal-gallery-container flex gap-12 pb-5 overscroll-x-contain overflow-x-auto max-w-5xl mx-auto"
+  >
+    {
+      images.map((image) => (
+        <div class={`shrink-0 h-[480px] flex items-center justify-center`}>
+          <AstroImage
+            src={image.src}
+            alt={image.alt || "image"}
+            className="max-w-none h-full w-auto object-contain select-none"
+          />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+```
+`<AstroImage />` is a component that automatically optimizes images. watch [](/astro-image)
+
+## Example
+
+{% horizontalGallery
+   images=[{src: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hyaXN0bWFzfGVufDB8fDB8fHwy", alt: "assorted-type of leaves lying on white panel"}, {src: "https://images.unsplash.com/photo-1545048702-79362596cdc9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2hyaXN0bWFzfGVufDB8fDB8fHwy", alt: "assorted Christmas ornaments"}, {src: "https://images.unsplash.com/photo-1482517967863-00e15c9b44be?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: "closeup photo of baubles on christmas tree"}, {src: "https://images.unsplash.com/photo-1514377006585-6e7975371bd6?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: " Christmas tree with string lights"}, {src: "https://images.unsplash.com/photo-1612979168796-bcae1575b8c5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: "green christmas tree with string lights"}] /%}

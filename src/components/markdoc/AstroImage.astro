@@ -1,0 +1,31 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  className?: string;
+  transitionName?: string;
+}
+const { src, alt, className, transitionName } = Astro.props;
+---
+
+{
+  typeof src === "string" ? (
+    <img
+      src={src}
+      alt={alt}
+      class={className}
+      title={alt}
+      transition:name={transitionName}
+    />
+  ) : (
+    <Image
+      src={src}
+      alt={alt}
+      class={className}
+      title={alt}
+      transition:name={transitionName}
+    />
+  )
+}

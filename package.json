@@ -1,0 +1,33 @@
+{
+  "name": "markdoc",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astro-community/astro-embed-bluesky": "^0.1.5",
+    "@astro-community/astro-embed-link-preview": "^0.2.3",
+    "@astro-community/astro-embed-twitter": "^0.5.9",
+    "@astro-community/astro-embed-vimeo": "^0.3.11",
+    "@astro-community/astro-embed-youtube": "^0.5.9",
+    "@astrojs/markdoc": "^0.15.10",
+    "@astrojs/node": "^9.5.1",
+    "@astrojs/react": "^4.4.2",
+    "@keystatic/astro": "^5.0.6",
+    "@keystatic/core": "^0.5.48",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^5.16.6",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19"
+  }
+}

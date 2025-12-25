@@ -1,0 +1,55 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Pagination from "@/components/Pagination.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import AstroImage from "@/components/markdoc/AstroImage.astro";
+import type { Page, GetStaticPaths } from "astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getCollection("posts");
+  const sortedPosts = posts.sort(
+    (a: any, b: any) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
+  return paginate(sortedPosts, { pageSize: 5 });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<CollectionEntry<"posts">>;
+}
+
+const { page } = Astro.props;
+---
+
+<Layout title="Posts">
+  <main
+    class="max-w-sm md:max-w-2xl lg:max-w-3xl mx-auto my-10 flex flex-col gap-9 p-2"
+  >
+    {
+      page.data.map((post) => (
+        <a href={`/${post.id}`}>
+          <article class="flex flex-col md:flex-row rounded-3xl overflow-hidden">
+            <div class="basis-2/3">
+              <AstroImage
+                class="object-cover object-center w-full h-full"
+                src={post.data.image}
+                alt={post.data.title}
+              />
+            </div>
+            <div class="basis-1/3 flex flex-col p-6 bg-white ">
+              <time
+                class="text-sm mb-2 font-bold opacity-50"
+                datetime={post.data.date.toISOString()}
+              >
+                {post.data.date.toLocaleDateString()}
+              </time>
+              <h2 class="text-xl lg:text-2xl font-bold flex-1 subpixel-antialiased tracking-tight text-pretty">
+                {post.data.title}
+              </h2>
+            </div>
+          </article>
+        </a>
+      ))
+    }
+    <Pagination page={page} />
+  </main>
+</Layout>

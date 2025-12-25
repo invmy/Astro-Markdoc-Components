@@ -1,0 +1,60 @@
+---
+date: 2025-12-25
+title: Heading Anchor
+description: Quickly create anchor links in MarkDoc articles for instant navigation.
+image: '@/assets/images/heading-anchor/image.jpg'
+---
+Just like the heading anchor links in the official Astro documentation. You can use MarkDoc to quickly customize them.
+
+This is the explanation in the official documentation. ： [Custom headings](https://docs.astro.build/en/guides/integrations-guide/markdoc/#custom-headings)
+
+## How does it work?
+
+Add Nodes Processor `Heading.astro`
+
+```ts
+//markdoc.config.mjs
+import { defineMarkdocConfig, nodes, component } from "@astrojs/markdoc/config";
+
+
+export default defineMarkdocConfig({
+  nodes: {
+    heading: {
+      ...nodes.heading,
+      render: component("./src/components/markdoc/Heading.astro"),
+    },
+```
+
+Add Astro components `src\components\markdoc\Heading.astro`
+
+```astro
+//src\components\markdoc\Heading.astro
+---
+interface Props {
+    level: number;
+    id: string;
+}
+const { level, id } = Astro.props;
+const Tag = `h${level}` as const;
+---
+
+<Tag id={id} class="group relative">
+    <slot />
+    <a
+        href={`#${id}`}
+        class="absolute opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer active:opacity-20 not-prose"
+        aria-label="Copy heading Link"
+        onclick={`event.preventDefault();const url = decodeURIComponent(location.href.split('#')[0]) + '#${id}';navigator.clipboard.writeText(url);`}
+    >
+        #
+    </a>
+</Tag>
+
+```
+
+## All Done
+
+Now，All headings will be processed by `Heading.astro` before output.
+
+### Example
+
