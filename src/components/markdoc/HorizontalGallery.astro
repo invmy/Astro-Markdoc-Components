@@ -10,17 +10,19 @@ interface Props {
 const { images } = Astro.props;
 ---
 
-<div class="w-screen max-w-none relative left-1/2 -translate-x-1/2 px-1">
+<div
+  class="relative w-full md:w-screen max-w-none md:left-1/2 md:-translate-x-1/2 px-1"
+>
   <div
-    class="flex gap-4 pb-5 overscroll-x-contain overflow-x-auto max-w-6xl mx-auto"
+    class="flex flex-col md:flex-row md:gap-4 md:pb-5 overflow-visible md:overflow-x-auto overscroll-x-contain max-w-6xl mx-auto"
   >
     {
       images.map((image) => (
-        <div class={`shrink-0 h-[480px] flex items-center justify-center`}>
+        <div class="shrink-0 h-auto md:h-[480px] flex items-center justify-center">
           <AstroImage
             src={image.src}
             alt={image.alt || "image"}
-            className="max-w-none h-full w-auto object-contain select-none"
+            className="w-full md:w-auto h-auto md:h-full max-w-full md:max-w-none object-contain select-none"
           />
         </div>
       ))
