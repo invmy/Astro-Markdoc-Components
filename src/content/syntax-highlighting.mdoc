@@ -1,0 +1,111 @@
+---
+date: 2025-12-27
+title: Using Expressive Code as a syntax highlighter
+description: Replace the default shiki with a better syntax highlighting processor.
+image: >-
+  @/assets/images/Expressive-Code.JPG
+---
+
+Expressive Code
+Present your source code on the web, making it easy to understand and visually stunning. All batteries included!
+
+The built-in shiki isn't very useful, so we're replacing it with a node processor!
+
+Code from:
+
+[](https://amandaguthrie.dev/post/astro-markdoc-expressive-code-1/#configure-expressive-code)
+
+## Installing Expressive Code
+
+[](https://expressive-code.com/installation/#astro)
+
+## Configure Expressive Code
+
+```mjs
+//astro.config.mjs
+
+import expressiveCode from "astro-expressive-code";
+
+...
+export default defineConfig({
+    ...
+  integrations: [
+
+    expressiveCode({
+      themes: ["material-theme-darker"],
+      emitExternalStylesheet: true,
+      defaultProps: {
+        wrap: true,
+      },
+    }),
+    markdoc({ allowHTML: true, ignoreIndentation: true }),
+  ],
+```
+
+
+## Configure Markdoc Nodes
+
+```mjs
+//markdoc.config.mjs
+
+import { defineMarkdocConfig, nodes, component } from "@astrojs/markdoc/config";
+
+
+export default defineMarkdocConfig({
+  nodes: {
+    fence: {
+      // Add custom Expressive Code component
+      render: component("./src/components/Fence.astro"),
+      attributes: {
+        // ... Default attributes we're using from Markdoc fence component
+        content: { type: String, required: true },
+        language: { type: String },
+        // ... Attributes we're adding to have them available in the code component
+        title: { type: String },
+        frame: { type: String, matches: ["auto", "none", "code", "terminal"] },
+      },
+    },
+  },
+```
+
+## Nodes components
+```astro
+//src\components\markdoc\Fence.astro
+---
+import { Code } from "astro-expressive-code/components";
+
+interface Props {
+  /**
+   * @desc Markdoc places the fence content in the `content` property.
+   * @example: `\r\n## Heading\r\n`
+   */
+  content: string;
+  /**
+   * @desc Markdoc places the parsed fence language in the `language` property.
+   * @example: `typescript`
+   */
+  language?: string;
+  /**
+   * @desc title is a custom Markdoc schema addition to pass a title to the code fence.
+   * @summary `title` is not required.
+   * If using Expressive Code's commented file name, it will populate that.
+   * If both are specified, it will follow Expressive Code's default behavior.
+   */
+  title?: string;
+  /**
+   * @desc Custom Markdoc schema addition to specify the Expressive Code frame type
+   * @summary `frame` is not required, and if not specified, defaults to `auto`.
+   * @example
+   * ```javascript {\% frame="none" %}
+   *     var foo = "a";
+   * ``` will set the frame to none.
+   */
+  frame?: PluginFramesProps["frame"];
+}
+
+const { content, language, title, frame } = Astro.props;
+---
+
+<Code code={content} lang={language} title={title} frame={frame} />
+
+```

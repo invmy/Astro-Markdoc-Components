@@ -1,5 +1,4 @@
 import { defineMarkdocConfig, nodes, component } from "@astrojs/markdoc/config";
-import shiki from "@astrojs/markdoc/shiki";
 
 export default defineMarkdocConfig({
   nodes: {
@@ -20,6 +19,18 @@ export default defineMarkdocConfig({
       ...nodes.link,
       render: component("./src/components/markdoc/Link.astro"),
     },
+    fence: {
+      // Add custom Expressive Code component
+      render: component("./src/components/markdoc/Fence.astro"),
+      attributes: {
+        // ... Default attributes we're using from Markdoc fence component
+        content: { type: String, required: true },
+        language: { type: String },
+        // ... Attributes we're adding to have them available in the code component
+        title: { type: String },
+        frame: { type: String, matches: ["auto", "none", "code", "terminal"] },
+      },
+    },
   },
   tags: {
     networkImage: {
@@ -36,11 +47,4 @@ export default defineMarkdocConfig({
       },
     },
   },
-  extends: [
-    shiki({
-      theme: "material-theme-darker",
-      wrap: true,
-      langs: [],
-    }),
-  ],
 });
