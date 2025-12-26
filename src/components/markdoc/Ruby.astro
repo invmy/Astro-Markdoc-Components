@@ -1,0 +1,8 @@
+---
+const { rt, text } = Astro.props;
+---
+
+<ruby>
+  {text ? text : <slot />}
+  <rp>(</rp><rt>{rt}</rt><rp>)</rp>
+</ruby>

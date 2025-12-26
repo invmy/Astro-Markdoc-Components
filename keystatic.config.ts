@@ -1,6 +1,7 @@
 import { config, fields, collection } from "@keystatic/core";
 import { networkImage } from "./keystatic_components/networkImage";
 import { horizontalGallery } from "./keystatic_components/horizontalGallery";
+import { ruby } from "./keystatic_components/ruby";
 
 export default config({
   storage: {
@@ -64,6 +65,7 @@ export default config({
           components: {
             networkImage,
             horizontalGallery,
+            ruby,
           },
         }),
       },

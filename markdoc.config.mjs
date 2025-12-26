@@ -46,5 +46,13 @@ export default defineMarkdocConfig({
         images: { type: Array, required: true },
       },
     },
+    ruby: {
+      render: component("./src/components/markdoc/Ruby.astro"),
+      attributes: {
+        text: { type: String },
+        rt: { type: String },
+      },
+      inline: true,
+    },
   },
 });

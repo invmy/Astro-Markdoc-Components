@@ -10,7 +10,7 @@ interface Props {
 
 const { src, alt, transitionName } = Astro.props;
 
-const modes = ["full", "min"];
+const modes = ["full", "min", "nsfw"];
 const parts = (alt || "").split("|").map((s) => s.trim());
 let mode = "";
 let description = "";
@@ -31,6 +31,9 @@ if (mode === "full") {
   widthClass = "w-screen max-w-none relative left-1/2 -translate-x-1/2";
 } else if (mode === "min") {
   widthClass = "w-full sm:max-w-[50%] mx-auto";
+} else if (mode === "nsfw") {
+  widthClass =
+    "transition-filter duration-500 ease-in-out filter blur-2xl hover:blur-none cursor-pointer";
 }
 ---
 

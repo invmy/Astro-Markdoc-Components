@@ -1,0 +1,85 @@
+---
+date: 2025-12-28
+title: Insert Chinese Pinyin or Japanese Kana using Ruby
+description: |
+  Insert Chinese Pinyin or Japanese Kana using Ruby
+image: '@/assets/images/insert-chinese-pinyin-or-japanese-kana-using-ruby/image.jpg'
+---
+### {% ruby text="我" rt="Wo" /%}{% ruby text="爱" rt="Ai" /%}{% ruby text="你" rt="Ni" /%}
+
+### {% ruby text="今夜" rt="こんや" /%}**は**{% ruby text="月" rt="つき" /%}**が**{% ruby text="綺麗" rt="きれい" /%}**ですね**
+
+```
+{ % ruby text="今夜" rt="こんや" /% }
+```
+使用Markdoc自定义Tags实现
+
+![](@/assets/images/insert-chinese-pinyin-or-japanese-kana-using-ruby/image.png)
+
+## Markdoc Tags component
+
+```mjs
+//markdoc.config.mjs
+  tags: {
+    ruby: {
+      render: component("./src/components/markdoc/Ruby.astro"),
+      attributes: {
+        text: { type: String },
+        rt: { type: String },
+      },
+      inline: true,
+    },
+  },
+```
+
+## keystatic.config.ts
+
+```ts
+//keystatic.config.ts
+import { ruby } from "./keystatic_components/ruby";
+...
+        content: fields.markdoc({
+...
+          components: {
+            networkImage,
+            horizontalGallery,
+            ruby,
+          },
+        }),
+```
+
+## keystatic component
+
+```ts
+//keystatic_components\ruby.ts
+import { fields } from "@keystatic/core";
+import { inline } from "@keystatic/core/content-components";
+import { createElement } from "react";
+
+export const ruby = inline({
+  label: "Ruby Annotation",
+  schema: {
+    text: fields.text({ label: "Character/Text", defaultValue: "字" }),
+    rt: fields.text({ label: "Reading (Pinyin/Furigana)", defaultValue: "zi" }),
+  },
+  ContentView: (props) => {
+    const { text, rt } = props.value;
+    return createElement(
+      "ruby",
+      {
+        style: {
+          background: !text && !rt ? "#eee" : "transparent",
+          padding: "0 2px",
+        },
+      },
+      [
+        text || (rt ? "" : "[Ruby]"),
+        createElement("rp", { key: "rp-start" }, "("),
+        createElement("rt", { key: "rt" }, rt),
+        createElement("rp", { key: "rp-end" }, ")"),
+      ]
+    );
+  },
+});
+
+```
